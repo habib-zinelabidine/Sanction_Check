@@ -1,0 +1,29 @@
+{
+  "jhipsterReactApp": {
+    "sanctionlist": {
+      "home": {
+        "title": "Free sanction checks and PEP screenings",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Sanction",
+        "createOrEditLabel": "Create or edit a Sanction",
+        "notFound": "No Sanction found"
+      },
+      "created": "A new Sanctionlist is created with identifier {{ param }}",
+      "updated": "A Sanctionlist is updated with identifier {{ param }}",
+      "deleted": "A Sanctionlist is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Sanctionlist {{ id }}?"
+      },
+      "detail": {
+        "title": "Sanctionlist"
+      },
+      "id": "ID",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "dob": "Date of birth",
+      "address": "Address",
+      "passport": "Passport",
+      "score": "Score"
+    }
+  }
+}
