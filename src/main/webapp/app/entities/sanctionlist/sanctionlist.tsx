@@ -24,6 +24,7 @@ export const Sanctionlist = (props: RouteComponentProps<{ url: string }>) => {
   const [sorting, setSorting] = useState(false);
 
   const [list, setlist] = useState([]);
+  const [Spinner, setSpinner] = useState(false);
 
   const sanctionlistList = useAppSelector(state => state.sanctionlist.entities);
   const loading = useAppSelector(state => state.sanctionlist.loading);
@@ -33,6 +34,7 @@ export const Sanctionlist = (props: RouteComponentProps<{ url: string }>) => {
   const updateSuccess = useAppSelector(state => state.sanctionlist.updateSuccess);
 
   const [Name, setName] = useState('');
+  const [IsOpen, setIsOpen] = useState(false);
 
   const getAllEntities = () => {
     dispatch(
@@ -101,6 +103,9 @@ export const Sanctionlist = (props: RouteComponentProps<{ url: string }>) => {
   const { match } = props;
 
   const handleSearch = () => {
+    setSpinner(true);
+    console.warn(Spinner);
+
     const instance = axios.create({});
     instance({
       method: 'POST',
@@ -112,7 +117,10 @@ export const Sanctionlist = (props: RouteComponentProps<{ url: string }>) => {
     })
       .then(response => {
         console.warn(response.data);
+        setlist(Object.entries(response.data.foundRecords));
         setlist(response.data.foundRecords);
+        setSpinner(false);
+        console.warn(Spinner);
       })
       .catch(error => console.warn(error));
   };
@@ -157,37 +165,63 @@ export const Sanctionlist = (props: RouteComponentProps<{ url: string }>) => {
           </div>
         </div>
       </div>
-      <div>
-        {list.length > 0 && (
-          <div className="card">
-            {list.map(result => {
-              return (
-                <div className="d-flex justify-content-center" key={result.alias_names}>
-                  <button
-                    className="list-group-item w-50 m-2"
-                    data-bs-toggle="collapse"
-                    data-bs-target="#collapseExample"
-                    aria-expanded="false"
-                    aria-controls="collapseExample"
-                  >
-                    <h4>{result.name}</h4>
-                    <p className="text-secondary">{result.source_id}</p>
-                  </button>
-
-                  <div className="collapse" id="collapseExample">
-                    <ul className="card-body">
-                      <li>{result.citizenship}</li>
-                      <li>{result.citizenship}</li>
-                      <li>{result.citizenship}</li>
-                      <li>{result.citizenship}</li>
-                      <li>{result.citizenship}</li>
-                    </ul>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
+      <div className="justify-content-center">
+        {list.length > 0 &&
+          (Spinner ? (
+            <div className="d-flex justify-content-center">
+              <div className="spinner-border" role="status">
+                <span className="sr-only">Loading...</span>
+              </div>
+            </div>
+          ) : (
+            <div className="container ">
+              <div className="row">
+                {list.map((result, key) => {
+                  return (
+                    <div className="col-6" key={key}>
+                      <div className="list-group-item m-2 ">
+                        <button
+                          className="list-group-item w-100 border-0"
+                          onClick={() => {
+                            setIsOpen(!IsOpen);
+                            console.warn(key);
+                          }}
+                        >
+                          <h4>{result.name}</h4>
+                          <p className="text-secondary">{result.source_id}</p>
+                        </button>
+                        {IsOpen && (
+                          <div>
+                            <ul className="list-group">
+                              <li className="list-group-item">address : {result.address}</li>
+                              <li className="list-group-item">alias_names : {result.alias_names}</li>
+                              <li className="list-group-item">citizenship : {result.citizenship}</li>
+                              <li className="list-group-item">citizenship_remarks : {result.citizenship_remarks}</li>
+                              <li className="list-group-item">date_of_birth : {result.date_of_birth}</li>
+                              <li className="list-group-item">entity_type : {result.entity_type}</li>
+                              <li className="list-group-item">gender : {result.gender}</li>
+                              <li className="list-group-item">given_names : {result.given_names}</li>
+                              <li className="list-group-item">last_names : {result.last_names}</li>
+                              <li className="list-group-item">list_date : {result.list_date}</li>
+                              <li className="list-group-item">name : {result.name}</li>
+                              <li className="list-group-item">place_of_birth : {result.place_of_birth}</li>
+                              <li className="list-group-item">sanction_details : {result.sanction_details}</li>
+                              <li className="list-group-item">source_id : {result.source_id}</li>
+                              <li className="list-group-item">source_type : {result.source_type}</li>
+                            </ul>
+                            <div className="d-flex justify-content-end">
+                              <button className="btn btn-danger m-1">Reject</button>
+                              <button className="btn btn-success m-1">Confirm</button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
       </div>
     </div>
   );
