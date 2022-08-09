@@ -14,6 +14,9 @@ import { ISanctionlist } from 'app/shared/model/sanctionlist.model';
 import { getEntities, reset } from './sanctionlist.reducer';
 
 import axios from 'axios';
+import { ToggleButton } from 'react-bootstrap';
+import { isObject } from 'lodash';
+import Accordion from 'react-bootstrap/Accordion';
 
 export const Sanctionlist = (props: RouteComponentProps<{ url: string }>) => {
   const dispatch = useAppDispatch();
@@ -35,6 +38,7 @@ export const Sanctionlist = (props: RouteComponentProps<{ url: string }>) => {
 
   const [Name, setName] = useState('');
   const [IsOpen, setIsOpen] = useState(false);
+  const [pagination, setpagination] = useState();
 
   const getAllEntities = () => {
     dispatch(
@@ -102,7 +106,8 @@ export const Sanctionlist = (props: RouteComponentProps<{ url: string }>) => {
 
   const { match } = props;
 
-  const handleSearch = () => {
+  const handleSearch = e => {
+    e.preventDefault();
     setSpinner(true);
     console.warn(Spinner);
 
@@ -179,42 +184,142 @@ export const Sanctionlist = (props: RouteComponentProps<{ url: string }>) => {
                 {list.map((result, key) => {
                   return (
                     <div className="col-6" key={key}>
-                      <div className="list-group-item m-2 ">
-                        <button
-                          className="list-group-item w-100 border-0"
-                          onClick={() => {
-                            setIsOpen(!IsOpen);
-                            console.warn(key);
-                          }}
-                        >
-                          <h4>{result.name}</h4>
-                          <p className="text-secondary">{result.source_id}</p>
-                        </button>
-                        {IsOpen && (
-                          <div>
-                            <ul className="list-group">
-                              <li className="list-group-item">address : {result.address}</li>
-                              <li className="list-group-item">alias_names : {result.alias_names}</li>
-                              <li className="list-group-item">citizenship : {result.citizenship}</li>
-                              <li className="list-group-item">citizenship_remarks : {result.citizenship_remarks}</li>
-                              <li className="list-group-item">date_of_birth : {result.date_of_birth}</li>
-                              <li className="list-group-item">entity_type : {result.entity_type}</li>
-                              <li className="list-group-item">gender : {result.gender}</li>
-                              <li className="list-group-item">given_names : {result.given_names}</li>
-                              <li className="list-group-item">last_names : {result.last_names}</li>
-                              <li className="list-group-item">list_date : {result.list_date}</li>
-                              <li className="list-group-item">name : {result.name}</li>
-                              <li className="list-group-item">place_of_birth : {result.place_of_birth}</li>
-                              <li className="list-group-item">sanction_details : {result.sanction_details}</li>
-                              <li className="list-group-item">source_id : {result.source_id}</li>
-                              <li className="list-group-item">source_type : {result.source_type}</li>
-                            </ul>
-                            <div className="d-flex justify-content-end">
-                              <button className="btn btn-danger m-1">Reject</button>
-                              <button className="btn btn-success m-1">Confirm</button>
+                      <p>{result.totalHits}</p>
+                      <div className="list-group-item p-0 shadow bg-white rounded">
+                        <Accordion>
+                          <Accordion.Header>
+                            <div className="list-group-item w-100 border-0 p-0 justify-content-center">
+                              <h4>{result.name}</h4>
+                              <p className="text-secondary">{result.source_id}</p>
                             </div>
-                          </div>
-                        )}
+                          </Accordion.Header>
+                          <Accordion.Body>
+                            <div className="container">
+                              <table className="table">
+                                <tbody>
+                                  <tr>
+                                    <th scope="row ">address</th>
+                                    <td>
+                                      {result.address &&
+                                        result.address.map((item, i) => {
+                                          return <li key={i}>{item}</li>;
+                                        })}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">alias_names</th>
+                                    <td>
+                                      {result.alias_names &&
+                                        result.alias_names.map((item, i) => {
+                                          return <li key={i}>{item}</li>;
+                                        })}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">alias_given_names</th>
+                                    <td>
+                                      {result.alias_given_names &&
+                                        result.alias_given_names.map((item, i) => {
+                                          return <li key={i}>{item}</li>;
+                                        })}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">citizenship</th>
+                                    <td>
+                                      {result.citizenship &&
+                                        result.citizenship.map((item, i) => {
+                                          return <li key={i}>{item}</li>;
+                                        })}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">citizenship_remarks</th>
+                                    <td>
+                                      {result.citizenship_remarks &&
+                                        result.citizenship_remarks.map((item, i) => {
+                                          return <li key={i}>{item}</li>;
+                                        })}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">date_of_birth</th>
+                                    <td>
+                                      {result.date_of_birth &&
+                                        result.date_of_birth.map((item, i) => {
+                                          return <li key={i}>{item}</li>;
+                                        })}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">entity_type</th>
+                                    <td>{result.entity_type}</td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">gender</th>
+                                    <td>{result.gender}</td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">given_names</th>
+                                    <td>
+                                      {result.given_names &&
+                                        result.given_names.map((item, i) => {
+                                          return <li key={i}>{item}</li>;
+                                        })}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">last_names</th>
+                                    <td>
+                                      {result.last_names &&
+                                        result.last_names.map((item, i) => {
+                                          return <li key={i}>{item}</li>;
+                                        })}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">list_date</th>
+                                    <td>{result.list_date}</td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">name</th>
+                                    <td>{result.name}</td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">place_of_birth</th>
+                                    <td>
+                                      {result.place_of_birth &&
+                                        result.place_of_birth.map((item, i) => {
+                                          return <li key={i}>{item}</li>;
+                                        })}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">sanction_details</th>
+                                    <td>
+                                      {result.sanction_details &&
+                                        result.sanction_details.map((item, i) => {
+                                          return <li key={i}>{item}</li>;
+                                        })}
+                                    </td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">source_id</th>
+                                    <td>{result.source_id}</td>
+                                  </tr>
+                                  <tr>
+                                    <th scope="row">source_type</th>
+                                    <td>{result.source_type}</td>
+                                  </tr>
+                                </tbody>
+                              </table>
+                              <div className="d-flex justify-content-end">
+                                <button className="btn btn-danger m-1">Reject</button>
+                                <button className="btn btn-success m-1">Confirm</button>
+                              </div>
+                            </div>
+                          </Accordion.Body>
+                        </Accordion>
                       </div>
                     </div>
                   );
