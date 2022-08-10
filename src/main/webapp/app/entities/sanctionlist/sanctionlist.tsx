@@ -28,6 +28,9 @@ export const Sanctionlist = (props: RouteComponentProps<{ url: string }>) => {
 
   const [list, setlist] = useState([]);
   const [Spinner, setSpinner] = useState(false);
+  const [dataoffset, setoffset] = useState(null);
+  const [count, setcount] = useState(0);
+  const [pages, setpages] = useState([]);
 
   const sanctionlistList = useAppSelector(state => state.sanctionlist.entities);
   const loading = useAppSelector(state => state.sanctionlist.loading);
@@ -39,6 +42,7 @@ export const Sanctionlist = (props: RouteComponentProps<{ url: string }>) => {
   const [Name, setName] = useState('');
   const [IsOpen, setIsOpen] = useState(false);
   const [pagination, setpagination] = useState();
+  const [buttonNumbers, setbuttonNumber] = useState();
 
   const getAllEntities = () => {
     dispatch(
@@ -117,7 +121,7 @@ export const Sanctionlist = (props: RouteComponentProps<{ url: string }>) => {
       url: 'https://site-api.dilisense.com/website/search',
       data: {
         query: Name,
-        offset: 0,
+        offset: count,
       },
     })
       .then(response => {
@@ -125,6 +129,8 @@ export const Sanctionlist = (props: RouteComponentProps<{ url: string }>) => {
         setlist(Object.entries(response.data.foundRecords));
         setlist(response.data.foundRecords);
         setSpinner(false);
+        setoffset(response.data.totalHits);
+        setcount(() => count + 15);
         console.warn(Spinner);
       })
       .catch(error => console.warn(error));
@@ -324,6 +330,10 @@ export const Sanctionlist = (props: RouteComponentProps<{ url: string }>) => {
                     </div>
                   );
                 })}
+              </div>
+              <div>
+                <button onClick={handleSearch}>Previous</button>
+                <button onClick={handleSearch}>Next</button>
               </div>
             </div>
           ))}
