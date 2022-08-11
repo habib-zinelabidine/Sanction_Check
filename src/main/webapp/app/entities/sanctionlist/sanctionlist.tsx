@@ -1,137 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import InfiniteScroll from 'react-infinite-scroll-component';
-import { Link, RouteComponentProps } from 'react-router-dom';
-import { Button, Table } from 'reactstrap';
-import { Translate, TextFormat, getSortState, ValidatedField, ValidatedForm } from 'react-jhipster';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
-import { APP_DATE_FORMAT, APP_LOCAL_DATE_FORMAT } from 'app/config/constants';
-import { ASC, DESC, ITEMS_PER_PAGE, SORT } from 'app/shared/util/pagination.constants';
-import { overridePaginationStateWithQueryParams } from 'app/shared/util/entity-utils';
-import { useAppDispatch, useAppSelector } from 'app/config/store';
-
-import { ISanctionlist } from 'app/shared/model/sanctionlist.model';
-import { getEntities, reset } from './sanctionlist.reducer';
 
 import axios from 'axios';
-import { ToggleButton } from 'react-bootstrap';
-import { isObject } from 'lodash';
+
 import Accordion from 'react-bootstrap/Accordion';
+import ReactPaginate from 'react-paginate';
 
-export const Sanctionlist = (props: RouteComponentProps<{ url: string }>) => {
-  const dispatch = useAppDispatch();
-
-  const [paginationState, setPaginationState] = useState(
-    overridePaginationStateWithQueryParams(getSortState(props.location, ITEMS_PER_PAGE, 'id'), props.location.search)
-  );
-  const [sorting, setSorting] = useState(false);
-
+export const Sanctionlist = () => {
   const [list, setlist] = useState([]);
   const [Spinner, setSpinner] = useState(false);
   const [dataoffset, setoffset] = useState(null);
-  const [count, setcount] = useState(0);
-  const [pages, setpages] = useState([]);
-
-  const sanctionlistList = useAppSelector(state => state.sanctionlist.entities);
-  const loading = useAppSelector(state => state.sanctionlist.loading);
-  const totalItems = useAppSelector(state => state.sanctionlist.totalItems);
-  const links = useAppSelector(state => state.sanctionlist.links);
-  const entity = useAppSelector(state => state.sanctionlist.entity);
-  const updateSuccess = useAppSelector(state => state.sanctionlist.updateSuccess);
-
   const [Name, setName] = useState('');
-  const [IsOpen, setIsOpen] = useState(false);
-  const [pagination, setpagination] = useState();
-  const [buttonNumbers, setbuttonNumber] = useState();
 
-  const getAllEntities = () => {
-    dispatch(
-      getEntities({
-        page: paginationState.activePage - 1,
-        size: paginationState.itemsPerPage,
-        sort: `${paginationState.sort},${paginationState.order}`,
-      })
-    );
-  };
-
-  const resetAll = () => {
-    dispatch(reset());
-    setPaginationState({
-      ...paginationState,
-      activePage: 1,
-    });
-    dispatch(getEntities({}));
-  };
-
-  useEffect(() => {
-    resetAll();
-  }, []);
-
-  useEffect(() => {
-    if (updateSuccess) {
-      resetAll();
-    }
-  }, [updateSuccess]);
-
-  useEffect(() => {
-    getAllEntities();
-  }, [paginationState.activePage]);
-
-  const handleLoadMore = () => {
-    if ((window as any).pageYOffset > 0) {
-      setPaginationState({
-        ...paginationState,
-        activePage: paginationState.activePage + 1,
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (sorting) {
-      getAllEntities();
-      setSorting(false);
-    }
-  }, [sorting]);
-
-  const sort = p => () => {
-    dispatch(reset());
-    setPaginationState({
-      ...paginationState,
-      activePage: 1,
-      order: paginationState.order === ASC ? DESC : ASC,
-      sort: p,
-    });
-    setSorting(true);
-  };
-
-  const handleSyncList = () => {
-    resetAll();
-  };
-
-  const { match } = props;
-
-  const handleSearch = e => {
-    e.preventDefault();
+  const handleSearch = data => {
     setSpinner(true);
     console.warn(Spinner);
 
+    const currentPage = data.selected;
     const instance = axios.create({});
     instance({
       method: 'POST',
       url: 'https://site-api.dilisense.com/website/search',
       data: {
         query: Name,
-        offset: count,
+        offset: currentPage * 15,
       },
     })
       .then(response => {
-        console.warn(response.data);
         setlist(Object.entries(response.data.foundRecords));
         setlist(response.data.foundRecords);
         setSpinner(false);
         setoffset(response.data.totalHits);
-        setcount(() => count + 15);
-        console.warn(Spinner);
       })
       .catch(error => console.warn(error));
   };
@@ -139,9 +37,7 @@ export const Sanctionlist = (props: RouteComponentProps<{ url: string }>) => {
   return (
     <div>
       <div className="d-flex align-items-center flex-column">
-        <h2 id="sanctionlist-heading" data-cy="SanctionlistHeading">
-          <Translate contentKey="jhipsterReactApp.sanctionlist.home.title"></Translate>
-        </h2>
+        <h2>Free sanction checks and PEP screenings</h2>
         <p className=".text-secondary">
           Perform your sanction checks and PEP screenings by accessing a myriad of official government sources from around the globe.
         </p>
@@ -331,12 +227,26 @@ export const Sanctionlist = (props: RouteComponentProps<{ url: string }>) => {
                   );
                 })}
               </div>
-              <div>
-                <button onClick={handleSearch}>Previous</button>
-                <button onClick={handleSearch}>Next</button>
-              </div>
             </div>
           ))}
+        {list.length > 0 && (
+          <div className="m-5">
+            <ReactPaginate
+              previousLabel={'previous'}
+              pageCount={Math.ceil(dataoffset / 15)}
+              nextLabel={'next'}
+              onPageChange={handleSearch}
+              containerClassName={'pagination justify-content-center'}
+              pageClassName={'page-item'}
+              pageLinkClassName={'page-link'}
+              previousClassName={'page-item'}
+              previousLinkClassName={'page-link'}
+              nextClassName={'page-item'}
+              nextLinkClassName={'page-link'}
+              activeClassName={'active'}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
