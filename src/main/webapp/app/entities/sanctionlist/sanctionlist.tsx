@@ -5,16 +5,18 @@ import axios from 'axios';
 import Accordion from 'react-bootstrap/Accordion';
 import ReactPaginate from 'react-paginate';
 
+import '../../../content/css/loading.css';
+
 export const Sanctionlist = () => {
   const [list, setlist] = useState([]);
   const [Spinner, setSpinner] = useState(false);
   const [dataoffset, setoffset] = useState(null);
   const [Name, setName] = useState('');
+  const [Error, setError] = useState(null);
 
   const handleSearch = data => {
     setSpinner(true);
-    console.warn(Spinner);
-
+    setError(null);
     const currentPage = data.selected;
     const instance = axios.create({});
     instance({
@@ -31,7 +33,11 @@ export const Sanctionlist = () => {
         setSpinner(false);
         setoffset(response.data.totalHits);
       })
-      .catch(error => console.warn(error));
+      .catch(error => {
+        setError(error.message);
+        setSpinner(false);
+        setlist([]);
+      });
   };
 
   return (
@@ -73,14 +79,28 @@ export const Sanctionlist = () => {
         </div>
       </div>
       <div className="justify-content-center">
-        {list.length > 0 &&
-          (Spinner ? (
-            <div className="d-flex justify-content-center">
-              <div className="spinner-border" role="status">
-                <span className="sr-only">Loading...</span>
+        {Error && (
+          <div className="alert alert-danger" role="alert">
+            {Error}
+          </div>
+        )}
+        {Spinner ? (
+          <div className="app-loading">
+            <div className="lds-pacman">
+              <div>
+                <div></div>
+                <div></div>
+                <div></div>
+              </div>
+              <div>
+                <div></div>
+                <div></div>
+                <div></div>
               </div>
             </div>
-          ) : (
+          </div>
+        ) : (
+          list.length > 0 && (
             <div className="container ">
               <div className="row">
                 {list.map((result, key) => {
@@ -228,7 +248,9 @@ export const Sanctionlist = () => {
                 })}
               </div>
             </div>
-          ))}
+          )
+        )}
+
         {list.length > 0 && (
           <div className="m-5">
             <ReactPaginate
