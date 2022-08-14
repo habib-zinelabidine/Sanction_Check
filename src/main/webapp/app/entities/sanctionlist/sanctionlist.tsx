@@ -5,8 +5,6 @@ import axios from 'axios';
 import Accordion from 'react-bootstrap/Accordion';
 import ReactPaginate from 'react-paginate';
 
-import '../../../content/css/loading.css';
-
 export const Sanctionlist = () => {
   const [list, setlist] = useState([]);
   const [Spinner, setSpinner] = useState(false);
@@ -85,18 +83,9 @@ export const Sanctionlist = () => {
           </div>
         )}
         {Spinner ? (
-          <div className="app-loading">
-            <div className="lds-pacman">
-              <div>
-                <div></div>
-                <div></div>
-                <div></div>
-              </div>
-              <div>
-                <div></div>
-                <div></div>
-                <div></div>
-              </div>
+          <div className="d-flex justify-content-center">
+            <div className="spinner-border" role="status">
+              <span className="sr-only">Loading...</span>
             </div>
           </div>
         ) : (
