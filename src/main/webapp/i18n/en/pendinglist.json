@@ -1,0 +1,26 @@
+{
+  "jhipsterReactApp": {
+    "pendinglist": {
+      "home": {
+        "title": "Pendinglists",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Pendinglist",
+        "createOrEditLabel": "Create or edit a Pendinglist",
+        "notFound": "No Pendinglists found"
+      },
+      "created": "A new Pendinglist is created with identifier {{ param }}",
+      "updated": "A Pendinglist is updated with identifier {{ param }}",
+      "deleted": "A Pendinglist is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Pendinglist {{ id }}?"
+      },
+      "detail": {
+        "title": "Pendinglist"
+      },
+      "id": "ID",
+      "firstName": "First Name",
+      "lastName": "Last Name",
+      "state": "State"
+    }
+  }
+}

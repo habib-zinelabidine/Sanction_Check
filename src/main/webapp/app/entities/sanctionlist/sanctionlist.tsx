@@ -11,6 +11,8 @@ export const Sanctionlist = () => {
   const [dataoffset, setoffset] = useState(null);
   const [Name, setName] = useState('');
   const [Error, setError] = useState(null);
+  const [accepted, setaccepted] = useState();
+  const [refused, setrefused] = useState();
 
   const handleSearch = data => {
     setSpinner(true);
@@ -38,6 +40,13 @@ export const Sanctionlist = () => {
       });
   };
 
+  const handleAccept = () => {
+    console.warn(Object.values(list[1]));
+  };
+
+  const handleReject = () => {
+    console.warn('refuse');
+  };
   return (
     <div>
       <div className="d-flex align-items-center flex-column">
@@ -225,8 +234,12 @@ export const Sanctionlist = () => {
                                 </tbody>
                               </table>
                               <div className="d-flex justify-content-end">
-                                <button className="btn btn-danger m-1">Reject</button>
-                                <button className="btn btn-success m-1">Confirm</button>
+                                <button className="btn btn-danger m-1" onClick={handleReject}>
+                                  Reject
+                                </button>
+                                <button className="btn btn-success m-1" onClick={handleAccept}>
+                                  Confirm
+                                </button>
                               </div>
                             </div>
                           </Accordion.Body>

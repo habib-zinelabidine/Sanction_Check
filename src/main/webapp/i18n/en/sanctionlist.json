@@ -2,11 +2,11 @@
   "jhipsterReactApp": {
     "sanctionlist": {
       "home": {
-        "title": "Free sanction checks and PEP screenings",
+        "title": "Sanctionlists",
         "refreshListLabel": "Refresh list",
-        "createLabel": "Create a new Sanction",
-        "createOrEditLabel": "Create or edit a Sanction",
-        "notFound": "No Sanction found"
+        "createLabel": "Create a new Sanctionlist",
+        "createOrEditLabel": "Create or edit a Sanctionlist",
+        "notFound": "No Sanctionlists found"
       },
       "created": "A new Sanctionlist is created with identifier {{ param }}",
       "updated": "A Sanctionlist is updated with identifier {{ param }}",
@@ -20,7 +20,7 @@
       "id": "ID",
       "firstName": "First Name",
       "lastName": "Last Name",
-      "dob": "Date of birth",
+      "dob": "Dob",
       "address": "Address",
       "passport": "Passport",
       "score": "Score"
