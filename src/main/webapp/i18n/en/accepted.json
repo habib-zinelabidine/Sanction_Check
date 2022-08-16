@@ -1,0 +1,25 @@
+{
+  "jhipsterReactApp": {
+    "accepted": {
+      "home": {
+        "title": "Accepteds",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Accepted",
+        "createOrEditLabel": "Create or edit a Accepted",
+        "notFound": "No Accepteds found"
+      },
+      "created": "A new Accepted is created with identifier {{ param }}",
+      "updated": "A Accepted is updated with identifier {{ param }}",
+      "deleted": "A Accepted is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Accepted {{ id }}?"
+      },
+      "detail": {
+        "title": "Accepted"
+      },
+      "id": "ID",
+      "firstName": "First Name",
+      "lastName": "Last Name"
+    }
+  }
+}

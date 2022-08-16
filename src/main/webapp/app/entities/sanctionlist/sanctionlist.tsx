@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import axios from 'axios';
 
@@ -11,8 +11,9 @@ export const Sanctionlist = () => {
   const [dataoffset, setoffset] = useState(null);
   const [Name, setName] = useState('');
   const [Error, setError] = useState(null);
-  const [accepted, setaccepted] = useState();
-  const [refused, setrefused] = useState();
+  const [btnState, setbtnState] = useState(true);
+  const [btnAccept, setbtnAccept] = useState(false);
+  const [btnReject, setbtnReject] = useState(false);
 
   const handleSearch = data => {
     setSpinner(true);
@@ -40,22 +41,28 @@ export const Sanctionlist = () => {
       });
   };
 
-  const handleAccept = () => {
-    console.warn(Object.values(list[1]));
+  const handleAccept = (sanction, key, event) => () => {
+    const acceptedList = localStorage.getItem('acceptedList') ? JSON.parse(localStorage.getItem('acceptedList')) : [];
+    acceptedList.push(sanction);
+    localStorage.setItem('acceptedList', JSON.stringify(acceptedList));
+    console.warn(sanction);
+    setbtnReject(true);
   };
 
-  const handleReject = () => {
-    console.warn('refuse');
+  const handleReject = sanction => () => {
+    const rejectedList = localStorage.getItem('rejectedList') ? JSON.parse(localStorage.getItem('rejectedList')) : [];
+    rejectedList.push(sanction);
+    localStorage.setItem('rejectedList', JSON.stringify(rejectedList));
+    setbtnAccept(true);
   };
   return (
     <div>
-      <div className="d-flex align-items-center flex-column">
+      <div className="d-flex align-items-center flex-column m-4">
         <h2>Free sanction checks and PEP screenings</h2>
         <p className=".text-secondary">
           Perform your sanction checks and PEP screenings by accessing a myriad of official government sources from around the globe.
         </p>
       </div>
-      <br></br>
 
       <div className="container">
         <div className="row justify-content-center">
@@ -72,12 +79,15 @@ export const Sanctionlist = () => {
                   data-cy="firstName"
                   type="text"
                   placeholder="Search for a person or company..."
-                  onChange={e => setName(e.target.value)}
+                  onChange={e => {
+                    if (!Name) setbtnState(false);
+                    setName(e.target.value);
+                  }}
                   value={Name}
                 />
               </div>
               <div className="col-auto">
-                <button className="btn btn-lg btn-primary" onClick={handleSearch}>
+                <button className="btn btn-lg btn-primary" onClick={handleSearch} disabled={btnState}>
                   Search
                 </button>
               </div>
@@ -117,128 +127,150 @@ export const Sanctionlist = () => {
                             <div className="container">
                               <table className="table">
                                 <tbody>
-                                  <tr>
-                                    <th scope="row ">address</th>
-                                    <td>
-                                      {result.address &&
-                                        result.address.map((item, i) => {
+                                  {result.address && (
+                                    <tr>
+                                      <th scope="row ">address</th>
+                                      <td>
+                                        {result.address.map((item, i) => {
                                           return <li key={i}>{item}</li>;
                                         })}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">alias_names</th>
-                                    <td>
-                                      {result.alias_names &&
-                                        result.alias_names.map((item, i) => {
+                                      </td>
+                                    </tr>
+                                  )}
+                                  {result.alias_names && (
+                                    <tr>
+                                      <th scope="row">alias_names</th>
+                                      <td>
+                                        {result.alias_names.map((item, i) => {
                                           return <li key={i}>{item}</li>;
                                         })}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">alias_given_names</th>
-                                    <td>
-                                      {result.alias_given_names &&
-                                        result.alias_given_names.map((item, i) => {
+                                      </td>
+                                    </tr>
+                                  )}
+                                  {result.alias_given_names && (
+                                    <tr>
+                                      <th scope="row">alias_given_names</th>
+                                      <td>
+                                        {result.alias_given_names.map((item, i) => {
                                           return <li key={i}>{item}</li>;
                                         })}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">citizenship</th>
-                                    <td>
-                                      {result.citizenship &&
-                                        result.citizenship.map((item, i) => {
+                                      </td>
+                                    </tr>
+                                  )}
+                                  {result.citizenship && (
+                                    <tr>
+                                      <th scope="row">citizenship</th>
+                                      <td>
+                                        {result.citizenship.map((item, i) => {
                                           return <li key={i}>{item}</li>;
                                         })}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">citizenship_remarks</th>
-                                    <td>
-                                      {result.citizenship_remarks &&
-                                        result.citizenship_remarks.map((item, i) => {
+                                      </td>
+                                    </tr>
+                                  )}
+                                  {result.citizenship_remarks && (
+                                    <tr>
+                                      <th scope="row">citizenship_remarks</th>
+                                      <td>
+                                        {result.citizenship_remarks.map((item, i) => {
                                           return <li key={i}>{item}</li>;
                                         })}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">date_of_birth</th>
-                                    <td>
-                                      {result.date_of_birth &&
-                                        result.date_of_birth.map((item, i) => {
+                                      </td>
+                                    </tr>
+                                  )}
+                                  {result.date_of_birth && (
+                                    <tr>
+                                      <th scope="row">date_of_birth</th>
+                                      <td>
+                                        {result.date_of_birth.map((item, i) => {
                                           return <li key={i}>{item}</li>;
                                         })}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">entity_type</th>
-                                    <td>{result.entity_type}</td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">gender</th>
-                                    <td>{result.gender}</td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">given_names</th>
-                                    <td>
-                                      {result.given_names &&
-                                        result.given_names.map((item, i) => {
+                                      </td>
+                                    </tr>
+                                  )}
+                                  {result.entity_type && (
+                                    <tr>
+                                      <th scope="row">entity_type</th>
+                                      <td>{result.entity_type}</td>
+                                    </tr>
+                                  )}
+                                  {result.gender && (
+                                    <tr>
+                                      <th scope="row">gender</th>
+                                      <td>{result.gender}</td>
+                                    </tr>
+                                  )}
+                                  {result.given_names && (
+                                    <tr>
+                                      <th scope="row">given_names</th>
+                                      <td>
+                                        {result.given_names.map((item, i) => {
                                           return <li key={i}>{item}</li>;
                                         })}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">last_names</th>
-                                    <td>
-                                      {result.last_names &&
-                                        result.last_names.map((item, i) => {
+                                      </td>
+                                    </tr>
+                                  )}
+                                  {result.last_names && (
+                                    <tr>
+                                      <th scope="row">last_names</th>
+                                      <td>
+                                        {result.last_names.map((item, i) => {
                                           return <li key={i}>{item}</li>;
                                         })}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">list_date</th>
-                                    <td>{result.list_date}</td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">name</th>
-                                    <td>{result.name}</td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">place_of_birth</th>
-                                    <td>
-                                      {result.place_of_birth &&
-                                        result.place_of_birth.map((item, i) => {
+                                      </td>
+                                    </tr>
+                                  )}
+                                  {result.list_date && (
+                                    <tr>
+                                      <th scope="row">list_date</th>
+                                      <td>{result.list_date}</td>
+                                    </tr>
+                                  )}
+                                  {result.name && (
+                                    <tr>
+                                      <th scope="row">name</th>
+                                      <td>{result.name}</td>
+                                    </tr>
+                                  )}
+                                  {result.place_of_birth && (
+                                    <tr>
+                                      <th scope="row">place_of_birth</th>
+                                      <td>
+                                        {result.place_of_birth.map((item, i) => {
                                           return <li key={i}>{item}</li>;
                                         })}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">sanction_details</th>
-                                    <td>
-                                      {result.sanction_details &&
-                                        result.sanction_details.map((item, i) => {
+                                      </td>
+                                    </tr>
+                                  )}
+                                  {result.sanction_details && (
+                                    <tr>
+                                      <th scope="row">sanction_details</th>
+                                      <td>
+                                        {result.sanction_details.map((item, i) => {
                                           return <li key={i}>{item}</li>;
                                         })}
-                                    </td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">source_id</th>
-                                    <td>{result.source_id}</td>
-                                  </tr>
-                                  <tr>
-                                    <th scope="row">source_type</th>
-                                    <td>{result.source_type}</td>
-                                  </tr>
+                                      </td>
+                                    </tr>
+                                  )}
+                                  {result.source_id && (
+                                    <tr>
+                                      <th scope="row">source_id</th>
+                                      <td>{result.source_id}</td>
+                                    </tr>
+                                  )}
+                                  {result.source_type && (
+                                    <tr>
+                                      <th scope="row">source_type</th>
+                                      <td>{result.source_type}</td>
+                                    </tr>
+                                  )}
                                 </tbody>
                               </table>
                               <div className="d-flex justify-content-end">
-                                <button className="btn btn-danger m-1" onClick={handleReject}>
-                                  Reject
+                                <button className="btn btn-danger m-1" onClick={handleReject(result)}>
+                                  {btnAccept ? 'Rejected ✔' : 'Reject'}
                                 </button>
-                                <button className="btn btn-success m-1" onClick={handleAccept}>
-                                  Confirm
+                                <button className="btn btn-success m-1" onClick={handleAccept(result, key, event)}>
+                                  {btnReject ? 'Accepted ✔' : 'Accept'}
                                 </button>
                               </div>
                             </div>

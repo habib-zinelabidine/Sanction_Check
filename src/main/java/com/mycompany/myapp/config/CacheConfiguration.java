@@ -53,6 +53,10 @@ public class CacheConfiguration {
             createCache(cm, com.mycompany.myapp.domain.User.class.getName() + ".authorities");
             createCache(cm, com.mycompany.myapp.domain.Sanctionlist.class.getName());
             createCache(cm, com.mycompany.myapp.domain.Pendinglist.class.getName());
+            createCache(cm, com.mycompany.myapp.domain.AcceptedList.class.getName());
+            createCache(cm, com.mycompany.myapp.domain.RejectedList.class.getName());
+            createCache(cm, com.mycompany.myapp.domain.Accepted.class.getName());
+            createCache(cm, com.mycompany.myapp.domain.AcceptedPeople.class.getName());
             // jhipster-needle-ehcache-add-entry
         };
     }

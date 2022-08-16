@@ -9,6 +9,10 @@
         "main": "Entities",
         "sanctionlist": "Sanctionlist",
         "pendinglist": "Pendinglist",
+        "acceptedList": "Accepted List",
+        "rejectedList": "Rejected List",
+        "accepted": "Accepted",
+        "acceptedPeople": "Accepted People",
         "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
       },
       "account": {

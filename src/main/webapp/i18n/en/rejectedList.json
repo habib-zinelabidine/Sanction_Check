@@ -1,0 +1,23 @@
+{
+  "jhipsterReactApp": {
+    "rejectedList": {
+      "home": {
+        "title": "Rejected Lists",
+        "refreshListLabel": "Refresh list",
+        "createLabel": "Create a new Rejected List",
+        "createOrEditLabel": "Create or edit a Rejected List",
+        "notFound": "No Rejected Lists found"
+      },
+      "created": "A new Rejected List is created with identifier {{ param }}",
+      "updated": "A Rejected List is updated with identifier {{ param }}",
+      "deleted": "A Rejected List is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Rejected List {{ id }}?"
+      },
+      "detail": {
+        "title": "Rejected List"
+      },
+      "id": "ID"
+    }
+  }
+}
