@@ -12,10 +12,14 @@ export const Sanctionlist = () => {
   const [Name, setName] = useState('');
   const [Error, setError] = useState(null);
   const [btnState, setbtnState] = useState(true);
-  const [btnAccept, setbtnAccept] = useState(false);
-  const [btnReject, setbtnReject] = useState(false);
+  const [btnAccept, setbtnAccept] = useState([]);
+  const [btnReject, setbtnReject] = useState([]);
 
   const handleSearch = data => {
+    if (data.nativeEvent) {
+      setlist([]);
+      data.preventDefault();
+    }
     setSpinner(true);
     setError(null);
     const currentPage = data.selected;
@@ -29,7 +33,6 @@ export const Sanctionlist = () => {
       },
     })
       .then(response => {
-        setlist(Object.entries(response.data.foundRecords));
         setlist(response.data.foundRecords);
         setSpinner(false);
         setoffset(response.data.totalHits);
@@ -41,19 +44,19 @@ export const Sanctionlist = () => {
       });
   };
 
-  const handleAccept = (sanction, key, event) => () => {
+  const handleAccept = (sanction, key) => () => {
+    sanction.key = key;
+    setbtnAccept(prev => [...prev, key]);
     const acceptedList = localStorage.getItem('acceptedList') ? JSON.parse(localStorage.getItem('acceptedList')) : [];
-    acceptedList.push(sanction);
+    if (!acceptedList.some(item => JSON.stringify(item) === JSON.stringify(sanction))) acceptedList.push(sanction);
     localStorage.setItem('acceptedList', JSON.stringify(acceptedList));
-    console.warn(sanction);
-    setbtnReject(true);
   };
 
-  const handleReject = sanction => () => {
+  const handleReject = (sanction, key) => () => {
+    setbtnReject(prev => [...prev, key]);
     const rejectedList = localStorage.getItem('rejectedList') ? JSON.parse(localStorage.getItem('rejectedList')) : [];
-    rejectedList.push(sanction);
+    if (!rejectedList.some(item => JSON.stringify(item) === JSON.stringify(sanction))) rejectedList.push(sanction);
     localStorage.setItem('rejectedList', JSON.stringify(rejectedList));
-    setbtnAccept(true);
   };
   return (
     <div>
@@ -64,7 +67,7 @@ export const Sanctionlist = () => {
         </p>
       </div>
 
-      <div className="container">
+      <form onSubmit={handleSearch} className="container">
         <div className="row justify-content-center">
           <div className="col-12 col-md-10 col-lg-8">
             <div className="card-body row no-gutters align-items-center">
@@ -87,14 +90,14 @@ export const Sanctionlist = () => {
                 />
               </div>
               <div className="col-auto">
-                <button className="btn btn-lg btn-primary" onClick={handleSearch} disabled={btnState}>
+                <button className="btn btn-lg btn-primary" type="submit" disabled={btnState}>
                   Search
                 </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </form>
       <div className="justify-content-center">
         {Error && (
           <div className="alert alert-danger" role="alert">
@@ -111,11 +114,11 @@ export const Sanctionlist = () => {
           list.length > 0 && (
             <div className="container ">
               <div className="row">
+                <p>{`${dataoffset} records found`}</p>
                 {list.map((result, key) => {
                   return (
                     <div className="col-6" key={key}>
-                      <p>{result.totalHits}</p>
-                      <div className="list-group-item p-0 shadow bg-white rounded">
+                      <div className="list-group-item p-0 shadow bg-white rounded m-2">
                         <Accordion>
                           <Accordion.Header>
                             <div className="list-group-item w-100 border-0 p-0 justify-content-center">
@@ -266,11 +269,19 @@ export const Sanctionlist = () => {
                                 </tbody>
                               </table>
                               <div className="d-flex justify-content-end">
-                                <button className="btn btn-danger m-1" onClick={handleReject(result)}>
-                                  {btnAccept ? 'Rejected ✔' : 'Reject'}
+                                <button
+                                  className="btn btn-danger m-1"
+                                  onClick={handleReject(result, key)}
+                                  disabled={btnReject.includes(key) || btnAccept.includes(key)}
+                                >
+                                  {btnReject.includes(key) ? 'Rejected ✔' : 'Reject'}
                                 </button>
-                                <button className="btn btn-success m-1" onClick={handleAccept(result, key, event)}>
-                                  {btnReject ? 'Accepted ✔' : 'Accept'}
+                                <button
+                                  disabled={btnReject.includes(key) || btnAccept.includes(key)}
+                                  className="btn btn-success m-1"
+                                  onClick={handleAccept(result, key)}
+                                >
+                                  {btnAccept.includes(key) ? 'Accepted ✔' : 'Accept'}
                                 </button>
                               </div>
                             </div>
